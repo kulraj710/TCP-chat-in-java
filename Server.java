@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,7 +24,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
-            server = new ServerSocket(3000);
+            server = new ServerSocket(9999);
 
             pool = Executors.newCachedThreadPool();
 
@@ -36,7 +36,7 @@ public class Server implements Runnable {
                 pool.execute(handler);
 
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             shutdown();
         }
     }
@@ -53,6 +53,7 @@ public class Server implements Runnable {
     public void shutdown() {
         try {
             done = true;
+            pool.shutdown();
             if (!server.isClosed()) {
                 server.close();
             }
@@ -105,7 +106,7 @@ public class Server implements Runnable {
 
                         if (messageSplit.length == 2) {
                             broadcast(username + " renamed themselves to " + messageSplit[1]);
-                            System.out.println(username + " renamed themevesl to " + messageSplit[1]);
+                            System.out.println(username + " renamed themselves to " + messageSplit[1]);
 
                             username = messageSplit[1];
 
@@ -149,12 +150,8 @@ public class Server implements Runnable {
         }
     }
 
-
     public static void main(String[] args) {
         Server server = new Server();
         server.run();
-
     }
-
-
 }
